@@ -1,0 +1,443 @@
+@java(import="Command",src="org.lib.Command") 
+
+package RobotBehavior
+
+   extern function int checkRobotReadyRequest (int, int)
+   extern function int robotReadyResponse (int, int)
+   extern function int sendNewPickPointRequest (int,int)
+   extern function int sendNewPickPointResponse (int,int)
+   extern function int hasNewTask (int,int)
+   extern function int sendGoto (double x,double y,double z)
+   extern function int checkMerker (int,int)
+   extern function int markerReturn (int,int)
+   extern function int noCartNotice (double x,double y,double z)
+   extern function int pickcart (int,int)
+   extern function int openDoor (int,int)
+   extern function int placeCart (int,int)
+   extern function int dockingRequest(int, int)
+   extern function int dockingResponse(int, int)
+   extern function write(int,string)
+   extern function waitForTask()
+   extern function int cartNoticeResponse()
+   extern function  int cartMovedNotice(int, int)
+   extern function   finish()
+           
+  port type ePort  ()         // SILENT BIP PORT
+  
+ 
+
+ atom type Behavior ( int robot_id )
+
+  data int CARTID
+  data int ROBOTID
+  data int ISREADY
+  data int REQ
+  data int RESPONSE
+  data int HASNEWTASK
+  data int XDATA
+    data int YDATA
+      data int ZDATA
+       data int MARKERID  
+       data int CARTNOTICERESPONSE        
+              data int PICKCARTRESPONSE 
+               data int DOORSTATE    
+                             data int PLACECARTRESPONSE 
+                             data int PLACEDOCKINGRESPONSE
+                             data string TEXT
+   port ePort p0()
+   port ePort p1()
+   port ePort p2()
+   port ePort p3()
+   port ePort p4()
+   port ePort p5()
+  
+   port ePort p6()
+   port ePort p7()
+   port ePort p8()
+   port ePort p9()
+   port ePort p10()
+   port ePort p11() 
+   port ePort p12() 
+   port ePort p13() 
+   port ePort p14() 
+   port ePort p15()  
+   port ePort p16() 
+   port ePort p17() 
+   port ePort p18()  
+   port ePort p19()  
+   port ePort p20()  
+   port ePort p21()        
+   port ePort p22()  
+   port ePort p23() 
+   port ePort p24()  
+   port ePort p25()        
+   port ePort p26()  
+   port ePort p27() 
+   port ePort p28()
+   port ePort p29()
+   port ePort p30()
+   port ePort p31()
+   port ePort p32()   
+    port ePort p33()  
+       port ePort p34()  
+          port ePort p35()  
+             port ePort p36()  
+                port ePort p37()   
+                                port ePort p38()   
+                                port ePort p39()   port ePort p40()  port ePort p41()  port ePort p42()  port ePort p43()  port ePort p44()  port ePort p45()  port ePort p46()  
+  port ePort rb_p0()
+  port ePort rb_p1()
+  port ePort rb_p2()
+  port ePort rb_p3()
+  port ePort rb_p4()
+  port ePort rb_p5()
+  
+  port ePort rb_p6()
+  port ePort rb_p7()
+  port ePort rb_p8()
+  port ePort rb_p9()
+  port ePort rb_p10()
+  port ePort rb_p11() 
+  port ePort rb_p12() 
+  port ePort rb_p13() 
+  port ePort rb_p14() 
+  port ePort rb_p15()  
+  port ePort rb_p16() 
+  port ePort rb_p17() 
+  port ePort rb_p18()  
+  port ePort rb_p19()  
+  port ePort rb_p20()  
+  port ePort rb_p21()        
+  port ePort rb_p22()  
+  port ePort rb_p23() 
+  port ePort rb_p24()  
+  port ePort rb_p25()        
+  port ePort rb_p26()  
+  port ePort rb_p27()
+     
+  place START ,AFTERSTART, S0, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, RB_START ,
+  		RB_S0, RB_S1, RB_S2, RB_S3, RB_S4, RB_S5, RB_S6, RB_S7, RB_S8, RB_S9, RB_S10, RB_S11, RB_S12, RB_S13, RB_S14, SFINAL,S15,S16,S17,S18,S19,S20,S21,S22,S23,S24,S25,S26
+  
+   	initial to START do {
+   		    ROBOTID = robot_id;
+		   	TEXT= "*************STARTING*************";
+   	        Command.write(ROBOTID,TEXT);
+   	}	
+   //CHECK IF THE ROBOT IS READY 
+   on p0 from START to AFTERSTART  do{ 
+   		TEXT= "CHECK ROBOT REQUEST READY";
+   	    Command.write(ROBOTID,TEXT);
+   	    
+		Command.checkRobotReadyRequest(REQ,ROBOTID);
+		ISREADY = Command.robotReadyResponse(REQ,ROBOTID);
+   } 
+   	 
+   	//CHECK IF THE ROBOT IS READY 
+   on p1 from AFTERSTART to S0 provided (ISREADY==1) do{ 
+   	TEXT= "IS READY";
+   	Command.write(ROBOTID,TEXT);
+   }
+   
+   on p2 from AFTERSTART to START provided (!(ISREADY==1)) do{ 
+   	 TEXT= "IS NOT READY";
+   	 Command.write(ROBOTID,TEXT);
+   	 Command.waitForTask();
+   }   
+   
+   //PICK POINT REQUEST
+   on p3 from S0 to S1 do{
+   	   	 TEXT= "NEW PICK POINT REQUEST";
+   	     Command.write(ROBOTID,TEXT);
+   	Command.sendNewPickPointRequest(REQ,ROBOTID);
+   }
+   //PICK POINT RESPONSE
+   on p4 from S1 to S2 do{
+   	   	 TEXT= "NEW PICK POINT RESPONSE";
+   	     Command.write(ROBOTID,TEXT);
+   	RESPONSE= Command.sendNewPickPointResponse(REQ,ROBOTID);
+   }
+   //CHECK IF PICK POINT RESPONSE IS FALSE
+   on p5 from S2 to S0 provided (!(RESPONSE==1)) do{
+   	   	 TEXT= "NEW PICK POINT RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.waitForTask();
+   } 
+   //CHECK IF  PICK POINT IS TRUE AND HAS NEXT TASK
+   on p6 from S2 to S3 provided (RESPONSE==1) do {
+   	   	 TEXT= "NEW PICK POINT RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	     
+   	     TEXT= "HAS A NEW TASK ???";
+   	     Command.write(ROBOTID,TEXT);
+   	HASNEWTASK =  Command.hasNewTask(REQ,ROBOTID);
+   }
+   //CHECK IF ROBOT HAS NEW TASK IS TRUE
+   on p7 from S3 to S4 provided (HASNEWTASK==1) do{
+   	   	 TEXT= "HAS A NEW TASK IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   }
+   //CHECK IF ROBOT HAS NEW TASK IS FALSE
+   on p8 from S3 to S0 provided (!(HASNEWTASK==1)) do{
+   	   	 TEXT= "HAS A NEW TASK IS FALSE";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.waitForTask();
+   }  
+   //GOTO PICKPOINT
+   on p9 from S4 to S5 do{
+   	     TEXT= "GOTO PICKPOINT";
+   	     Command.write(ROBOTID,TEXT);
+   	RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //CHECK IF PICKPOINT IS TRUE
+   on p10 from S5 to S6 provided (RESPONSE==1) do{
+   	     TEXT= " HAS GOTO PICKPOINT RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   }
+   //CHECK IF PICKCPOINT IS FALSE
+   on p11 from S5 to SFINAL provided (!(RESPONSE==1)) do{
+   	     TEXT= " HAS GOTO PICKPOINT RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.finish();
+   }
+   //GET THE MARKER ID
+   on p12 from S6 to S7 do {
+   	     TEXT= " GET THE MARKER ID";
+   	     Command.write(ROBOTID,TEXT);
+   	MARKERID= Command.checkMerker(REQ,ROBOTID);
+   }
+   //CHECK IF THE MARKER IS TRUE
+   on p13 from S7 to S8 provided (MARKERID!=0) do{
+    	 TEXT= " HAS THE MARKER ID IS TRUE";
+   	     Command.write(ROBOTID,TEXT);  	
+   }
+   //CHECK IF THE MARKER IS FALSE AND SEND NO CART NOTICE
+   on p14 from S7 to S9 provided (MARKERID==0) do{
+   	     TEXT= " HAS THE MARKER ID IS FALSE";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.noCartNotice(XDATA,YDATA,ZDATA);
+   	     CARTNOTICERESPONSE= Command.cartNoticeResponse();
+   }
+   
+   //CHECK IF CART NOTICE IS TRUE
+   on p15 from S9 to S0 provided (CARTNOTICERESPONSE==1) do{
+   	   	 TEXT= "  CART NOTICE RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);   
+   	     Command.waitForTask();	
+   }
+   //PICK CART
+   on p16 from S8 to S10  do{
+   	   	 TEXT= " PICK CART";
+   	     Command.write(ROBOTID,TEXT);
+   	PICKCARTRESPONSE=Command.pickcart(REQ,MARKERID);
+   }
+   //CHECK IF PICK CART IS TRUE
+   on p17 from S10 to S11 provided (PICKCARTRESPONSE==1) do{
+   	   	 TEXT= " PICK CART IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   }
+   //CHECK IF PICK CART IS FALSE
+   on p18 from S10 to SFINAL provided (!(PICKCARTRESPONSE==1)) do{
+   	   	 TEXT= " PICK MISSION FAILED";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.finish();
+   }
+   //GOTO AUXILARY STORAGE POINT
+   on p19 from S11 to S12 do{
+   	   	 TEXT= " SEND GOTO";
+   	     Command.write(ROBOTID,TEXT);
+   	RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //CHECK IF RESPONSE IS FALSE
+   on p20 from S12 to SFINAL provided(RESPONSE!=1) do{
+		 TEXT= " GOTO RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	        	     Command.finish();
+   }
+   //CHECK IF RESPONSE IS TRUE AND CHECK MARKER
+   on p21 from S12 to S13 provided(RESPONSE==1) do{
+ 		 TEXT= " GOTO RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	   	 TEXT= " GET THE MARKER ID";
+   	     Command.write(ROBOTID,TEXT);
+   	     Command.checkMerker(REQ,ROBOTID);
+   		 MARKERID= Command.markerReturn(REQ,ROBOTID);
+   }
+   //CHECK IF MARKER IS TRUE AND OPEN DOOR
+   on p22 from S13 to S14 provided (MARKERID==1) do {
+   	   	 TEXT= " HAS THE MARKER ID IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	   	 TEXT= " OPEN DOOR";
+   	     Command.write(ROBOTID,TEXT);
+   	DOORSTATE=Command.openDoor(REQ,ROBOTID);
+   }
+   //CHECK THE DOOR STATE IS FALSE
+   on p23 from S14 to SFINAL provided (DOORSTATE==0) do{
+   	     TEXT= " DOOR STATE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	        	     Command.finish();
+   }
+   //CHECK THE DOOR STATE IS TRUE AND GOTO STORAGE POINT
+   on p24 from S14 to S16 provided (DOORSTATE==1) do{
+   	   	 TEXT= " DOOR RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     
+   	   	 TEXT= " SEND GOTO STORAGE POINT";
+   	     Command.write(ROBOTID,TEXT);	
+
+   	   	 RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //CHECK IF THE GOTO RESPONSE IS FALSE
+   on p25 from S16 to SFINAL provided(RESPONSE==0) do{
+		 TEXT= " GOTO RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);  
+   	        	     Command.finish();	
+   }
+   //CHECK IF THE GOTO RESPONSE IS TRUE AND PLACE CART
+   on p26 from S16 to S25 provided(RESPONSE!=0) do{
+   		 TEXT= " GOTO RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " PLACE CART";
+   	     Command.write(ROBOTID,TEXT);	   	
+   	PLACECARTRESPONSE= Command.placeCart(REQ,CARTID);
+   }
+   //CHECK IF PLACE CART RESPONSE IS FALSE
+   on p27 from S25 to SFINAL provided (PLACECARTRESPONSE!=1) do {
+		 TEXT= " PLACE CART RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	        	     Command.finish();
+   }
+   //CHECK IF PLACE CART RESPONSE IS TRUE AND TRIGGER CART MOVEMENT
+    on p28 from S25 to S26 provided (PLACECARTRESPONSE==1) do {
+    	 TEXT= " PLACE CART RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " SEND CART MOVED NOTICE ";
+   	     Command.write(ROBOTID,TEXT);	
+   	     Command.cartMovedNotice(REQ,ROBOTID);
+   }
+   //CART NOTICE RESPONSE
+    on p29 from S26 to S17 do {
+   	     TEXT= " CART NOTICE RESPONSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     Command.cartNoticeResponse( );
+   }     
+ 
+   
+   
+   //SEND DOCKING REQUEST AND DOCKING RESPONSE
+   on p30 from S17 to S18 do {
+   	TEXT= " SEND DOCKING REQUEST";
+   	Command.write(ROBOTID,TEXT);	
+   	Command.dockingRequest(REQ,CARTID);
+   	TEXT= " SEND DOCKING RESPONSE";
+   	Command.write(ROBOTID,TEXT);	
+   	PLACEDOCKINGRESPONSE= 	Command.dockingResponse(REQ,CARTID);
+   }
+   
+   //SEND GOTO DOCK AUXILARY POINT
+   on p31 from S18 to S19 provided(PLACEDOCKINGRESPONSE==1)do {
+     	TEXT= " DOCKING RESPONSE IS TRUE";
+     	Command.write(ROBOTID,TEXT);
+      	TEXT= " SEND GOTO DOCK AUXILARY POINT";
+     	Command.write(ROBOTID,TEXT);
+   		RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //ALARM
+   on p32 from S19 to SFINAL provided (RESPONSE==0) do { 
+   	     TEXT= " GOTO RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	        	     Command.finish();
+   }
+   //SEND CHECK MARKER
+   on p33 from S19 to S20 provided (RESPONSE!=0) do { 
+   	   	 TEXT= " GOTO RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " GET THE MARKER ID";
+   	     Command.write(ROBOTID,TEXT);	   	
+   		 Command.checkMerker(REQ,ROBOTID);
+   		 MARKERID= Command.markerReturn(REQ,ROBOTID);
+   }
+   //CHECK THE MARKER IS TRUE
+   on p34 from S20 to S21 provided (MARKERID==1) do {
+   	   	 TEXT= " HAS THE MARKER ID IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " OPEN DOOR";
+   	     Command.write(ROBOTID,TEXT);	   	
+   	DOORSTATE=Command.openDoor(REQ,ROBOTID);
+   }
+   //CHECK THE DOOR STATE AND GOTO DOCKING POINT
+   on p35 from S21 to S22 provided (DOORSTATE==1) do {
+   		 TEXT= " DOOR RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);
+   	     TEXT= " GOTO DOCKING AREA";
+   	     Command.write(ROBOTID,TEXT);	 
+   		 RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //ALARM
+   on p36 from S21 to SFINAL provided (DOORSTATE!=1) do {
+   	     TEXT= " DOOR RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);	
+   	        	     Command.finish();  
+   }
+   //CHECK IF THE MARKER IS FALSE AND GOTO DOCKING AREA
+   on p37 from S20 to S23 provided (MARKERID!=1) do {
+   	   	 TEXT= " GOTO DOCKING AREA";
+   	     Command.write(ROBOTID,TEXT);	
+   	RESPONSE = Command.sendGoto(XDATA,YDATA,ZDATA);
+   }
+   //CHECK IF THE GOTO IS TRUE
+   on p38 from S23 to S24 provided (RESPONSE==1) do{
+   	     TEXT= " GOTO RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);	
+   }
+   //CHECK IF THE GOTO IS FALSE
+   on p40 from S23 to SFINAL provided (RESPONSE!=1) do{
+   	   	 TEXT= " GOTO RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);	
+   	        	     Command.finish();
+   }
+   //CHECK IF THE GOTO IS FALSE
+   on p41 from S22 to SFINAL provided (RESPONSE!=1) do{
+   	   	 TEXT= " GOTO RESPONSE IS FALSE";
+   	     Command.write(ROBOTID,TEXT);	
+   	     TEXT= " RISING ALARM";
+   	     Command.write(ROBOTID,TEXT);
+   	        	     Command.finish();
+   }
+   //CHECK IF THE GOTO IS TRUE
+   on p39 from S22 to S24 provided (RESPONSE==1) do{
+   	   	 TEXT= " GOTO RESPONSE IS TRUE";
+   	     Command.write(ROBOTID,TEXT);	
+   }
+   on p42 from S24 to S0 do{
+   	
+   	   	 TEXT= " **************END OF THE FIRST STEP***************";
+   	     Command.write(ROBOTID,TEXT);	
+   }
+  
+end   
+
+  compound type sim07()
+
+  	 component Behavior robot_1 (1 )
+      
+  end
+  
+end
