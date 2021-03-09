@@ -11,5 +11,5 @@ The repository contains the Maven projecst related to the ROBOTs orchestration:
 * 5- eu.brain.iot.single-framework-example
 
 
-# BIP Designer Bundles developer : Baouya Abdelhakim - Researcher - Contact him for details
+**BIP Designer Bundles developer : Baouya Abdelhakim - Researcher - Contact him for details**
 
