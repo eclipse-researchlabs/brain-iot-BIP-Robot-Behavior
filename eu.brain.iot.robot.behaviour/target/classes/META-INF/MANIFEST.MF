@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1615220933224
+Bundle-Description: The eu.brain.iot.robot.behaviour DS component - bu
+ ilt using OSGi enRoute R7
+Bundle-ManifestVersion: 2
+Bundle-Name: eu.brain.iot.robot.behaviour
+Bundle-SymbolicName: eu.brain.iot.service.robotic.eu.brain.iot.robot.b
+ ehaviour
+Bundle-Version: 0.0.2.202103081628
+Created-By: 1.8.0_271 (Oracle Corporation)
+Import-Package: eu.brain.iot.eventing.api;version="[0.0,1)",eu.brain.i
+ ot.robot.api;version="[1.0,2)",eu.brain.iot.robot.events;version="[1.
+ 0,2)",eu.brain.iot.service.robotic.door.api;version="[1.0,2)",eu.brai
+ n.iot.warehouse.events;version="[1.0,2)",org.osgi.framework;version="
+ [1.9,2)",org.osgi.service.cm;version="[1.6,2)",org.osgi.service.log;v
+ ersion="[1.4,2)"
+Private-Package: atom,compound,connector,eu.brain.iot.robot.behaviour,
+ org.lib,port,task,type
+Provide-Capability: osgi.service;objectClass:List<String>="eu.brain.io
+ t.eventing.api.SmartBehaviour";uses:="eu.brain.iot.eventing.api",eu.b
+ rain.iot.behaviour;consumed:List<String>="eu.brain.iot.robot.events.M
+ arkerReturn,eu.brain.iot.robot.events.QueryStateValueReturn,eu.brain.
+ iot.robot.events.RobotReadyBroadcast,eu.brain.iot.robot.events.Availa
+ bilityReturn,eu.brain.iot.service.robotic.door.api.DoorStatusResponse
+ ,eu.brain.iot.warehouse.events.NewPickPointResponse,eu.brain.iot.ware
+ house.events.NewStoragePointResponse,eu.brain.iot.warehouse.events.Ca
+ rtNoticeResponse,eu.brain.iot.warehouse.events.DockingResponse,eu.bra
+ in.iot.warehouse.events.NewStoragePointResponse";author=UGA;name="Rob
+ ot Behavior";description="Implements a Robot Behavior."
+Require-Capability: osgi.service;filter:="(objectClass=eu.brain.iot.ev
+ enting.api.EventBus)";effective:=active,osgi.service;filter:="(object
+ Class=org.osgi.service.cm.ConfigurationAdmin)";effective:=active,osgi
+ .service;filter:="(objectClass=org.osgi.service.log.LoggerFactory)";e
+ ffective:=active;resolution:=optional,osgi.extender;filter:="(&(osgi.
+ extender=osgi.component)(version>=1.4.0)(!(version>=2.0.0)))",osgi.ee
+ ;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Service-Component: OSGI-INF/eu.brain.iot.robot.behaviour.RobotBehaviou
+ r.xml
+Tool: Bnd-5.1.2.202007211702
+

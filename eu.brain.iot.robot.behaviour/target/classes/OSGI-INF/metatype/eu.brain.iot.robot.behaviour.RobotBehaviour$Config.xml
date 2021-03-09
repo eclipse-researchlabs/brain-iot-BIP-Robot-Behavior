@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="OSGI-INF/l10n/eu.brain.iot.robot.behaviour.RobotBehaviour$Config">
+  <OCD id="eu.brain.iot.robot.behaviour.RobotBehaviour$Config" name="Eu brain iot robot behaviour robot behaviour config" description="">
+    <AD id="name" type="String" name="Name" description="The name of the robot behaviour"/>
+    <AD id="id" type="Integer" name="Id" description="The identifier for the robot behaviour"/>
+  </OCD>
+</metatype:MetaData>

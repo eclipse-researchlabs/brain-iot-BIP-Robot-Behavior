@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.4.0" name="eu.brain.iot.robot.behaviour.RobotBehaviour" configuration-policy="require" activate="activate" configuration-pid="eu.brain.iot.robot.behaviour.Behaviour">
+  <property name="eu.brain.iot.behaviour.consumed" type="String">eu.brain.iot.robot.events.MarkerReturn
+eu.brain.iot.robot.events.QueryStateValueReturn
+eu.brain.iot.robot.events.RobotReadyBroadcast
+eu.brain.iot.robot.events.AvailabilityReturn
+eu.brain.iot.service.robotic.door.api.DoorStatusResponse
+eu.brain.iot.warehouse.events.NewPickPointResponse
+eu.brain.iot.warehouse.events.NewStoragePointResponse
+eu.brain.iot.warehouse.events.CartNoticeResponse
+eu.brain.iot.warehouse.events.DockingResponse
+eu.brain.iot.warehouse.events.NewStoragePointResponse</property>
+  <property name="eu.brain.iot.behaviour.author" type="String" value="UGA"/>
+  <property name="eu.brain.iot.behaviour.name" type="String" value="Robot Behavior"/>
+  <property name="eu.brain.iot.behaviour.description" type="String" value="Implements a Robot Behavior."/>
+  <property name="eu.brain.iot.behaviour.filter" type="String" value=""/>
+  <service>
+    <provide interface="eu.brain.iot.eventing.api.SmartBehaviour"/>
+  </service>
+  <reference name="ConfigurationAdmin" interface="org.osgi.service.cm.ConfigurationAdmin" bind="setConfigurationAdmin"/>
+  <reference name="eventBus" interface="eu.brain.iot.eventing.api.EventBus" field="eventBus"/>
+  <reference name="log" cardinality="0..1" interface="org.osgi.service.log.LoggerFactory" field="log"/>
+  <implementation class="eu.brain.iot.robot.behaviour.RobotBehaviour"/>
+</scr:component>
